@@ -2,47 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Language Redirect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Language Redirect with Telegram WebApp Logging</title>
   <script>
-    // Получаем initData от Telegram WebApp
-    const tg = window.Telegram?.WebApp;
-    const initData = tg?.initData || "";
-
-    // Функция определения языка
+    // Получаем предпочтительный язык браузера
     function getPreferredLanguage() {
       const userLang = navigator.language || navigator.userLanguage;
       return userLang.split('-')[0];
     }
 
-    // Определяем, на какую страницу перейти
-    const lang = getPreferredLanguage();
-    const targetUrl = lang === "ru" ? "index-ru.html" : "index-en.html";
-
-    // Подготовим данные для отправки
-    const eventData = {
-      event: "webapp_open",
-      initData: initData || null,
-      language: lang,
-      userAgent: navigator.userAgent,
-      fromTelegram: Boolean(initData),
-      timestamp: new Date().toISOString()
-    };
-
-    // Отправим данные в Telegram боту, если инициализация есть
-    if (tg?.sendData) {
-      tg.sendData(JSON.stringify(eventData));
+    // Отправка данных в Telegram-бот (если открыто в Telegram WebApp)
+    function sendTelegramLog(eventName) {
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        // Отправляем данные (JSON-строка)
+        window.Telegram.WebApp.sendData(JSON.stringify({ event: eventName, timestamp: new Date().toISOString() }));
+      } else {
+        // Можно сюда добавить fallback-логику для других случаев, если нужно
+        console.log('Not in Telegram WebApp, no data sent');
+      }
     }
 
-    // Редирект сразу (без задержки)
-    window.location.href = targetUrl;
+    // Определяем язык и делаем редирект
+    const lang = getPreferredLanguage();
+
+    // Сразу логируем открытие страницы
+    sendTelegramLog('app_opened');
+
+    // Перенаправление без задержки
+    if (lang === 'ru') {
+      window.location.replace('index-ru.html');
+    } else {
+      window.location.replace('index-en.html');
+    }
   </script>
 </head>
 <body>
   <noscript>
+    <p>Please enable JavaScript to use this website. Redirecting to English version...</p>
     <meta http-equiv="refresh" content="0; url=index-en.html" />
-    <p>Please enable JavaScript. Redirecting...</p>
   </noscript>
-  <p>Redirecting...</p>
+  <p>Redirecting to the appropriate language version...</p>
 </body>
 </html>
