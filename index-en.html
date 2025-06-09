@@ -482,6 +482,25 @@
                 width: 100%;
             }
         }
+
+        /* Warning modal styles */
+        .warning-modal .modal-header {
+            background-color: #ff9800;
+            color: #fff;
+        }
+        .warning-modal .modal-footer {
+            background-color: #ffe0b2;
+        }
+        .warning-modal .close-warning {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body class="light">
@@ -607,6 +626,21 @@
                 <button class="close-settings" onclick="closeSettings()">
                     Close
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="modal-overlay hidden">
+        <div class="modal warning-modal">
+            <div class="modal-header">
+                <h3>Warning</h3>
+            </div>
+            <div class="modal-body" id="warning-modal-message">
+                <!-- Message will be set by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="close-warning" onclick="closeWarningModal()">OK</button>
             </div>
         </div>
     </div>
@@ -761,7 +795,7 @@
         function confirmQuantity() {
             const quantity = parseInt(state.quantityInput) || 1;
             if (quantity > 999) {
-                alert('Maximum number of dice of one type- 999');
+                showWarning('Maximum number of dice of one type- 999');
                 return;
             }
             
@@ -779,7 +813,7 @@
             if (quantity < 1) return;
             
             if (state.dicePool.length >= state.MAX_GROUPS) {
-                alert(`Maximum number of dice groups - ${state.MAX_GROUPS}`);
+                showWarning(`Maximum number of dice groups - ${state.MAX_GROUPS}`);
                 return;
             }
             
@@ -841,7 +875,7 @@
         // Roll the dice in the pool
         function rollDice() {
             if (state.dicePool.length === 0) {
-                alert('Add dice to the dice pool for rolling');
+                showWarning('Add dice to the dice pool for rolling');
                 return;
             }
             
@@ -985,7 +1019,7 @@
 
         // Send results to chat (simulated)
         function sendToChat() {
-            alert('Results sent to chat!');
+            showWarning('Results sent to chat!');
             closeResults();
         }
 
@@ -1005,6 +1039,16 @@
             state.theme = theme;
             document.body.className = theme;
             localStorage.setItem('diceTheme', theme);
+        }
+
+        // Show warning modal instead of alert
+        function showWarning(message) {
+            document.getElementById('warning-modal-message').textContent = message;
+            document.getElementById('warning-modal').classList.remove('hidden');
+        }
+
+        function closeWarningModal() {
+            document.getElementById('warning-modal').classList.add('hidden');
         }
 
         // Initialize the app when the page loads
