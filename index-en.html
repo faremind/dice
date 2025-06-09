@@ -1051,6 +1051,15 @@
             document.getElementById('warning-modal').classList.add('hidden');
         }
 
+        // Send event to Telegram bot on page open (only if inside Telegram WebApp)
+        function sendTelegramLog(eventName) {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.sendData(JSON.stringify({ event: eventName, timestamp: new Date().toISOString() }));
+            }
+        }
+        sendTelegramLog('app_opened_en');
+
         // Initialize the app when the page loads
         window.onload = init;
     </script>

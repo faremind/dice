@@ -1050,6 +1050,15 @@
             document.getElementById('warning-modal').classList.add('hidden');
         }
 
+        // Отправка события в Telegram-бот при открытии страницы (только если внутри Telegram WebApp)
+        function sendTelegramLog(eventName) {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.sendData(JSON.stringify({ event: eventName, timestamp: new Date().toISOString() }));
+            }
+        }
+        sendTelegramLog('app_opened_ru');
+
         // Initialize the app when the page loads
         window.onload = init;
     </script>

@@ -26,9 +26,6 @@
     // Определяем язык и делаем редирект
     const lang = getPreferredLanguage();
 
-    // Сразу логируем открытие страницы
-    sendTelegramLog('app_opened');
-
     // Перенаправление без задержки
     if (lang === 'ru') {
       window.location.replace('index-ru.html');
