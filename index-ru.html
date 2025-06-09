@@ -1054,9 +1054,11 @@
         function sendTelegramLog(eventName) {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
+                // Отправляем данные через sendData, чтобы бот получил web_app_data
                 window.Telegram.WebApp.sendData(JSON.stringify({ event: eventName, timestamp: new Date().toISOString() }));
             }
         }
+        // Вызов отправки при загрузке страницы
         sendTelegramLog('app_opened_ru');
 
         // Initialize the app when the page loads
