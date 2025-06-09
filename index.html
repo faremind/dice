@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Language Redirect</title>
+  <script>
+    // Получаем initData от Telegram WebApp
+    const tg = window.Telegram?.WebApp;
+    const initData = tg?.initData || "";
+
+    // Функция определения языка
+    function getPreferredLanguage() {
+      const userLang = navigator.language || navigator.userLanguage;
+      return userLang.split('-')[0];
+    }
+
+    // Определяем, на какую страницу перейти
+    const lang = getPreferredLanguage();
+    const targetUrl = lang === "ru" ? "index-ru.html" : "index-en.html";
+
+    // Подготовим данные для отправки
+    const eventData = {
+      event: "webapp_open",
+      initData: initData || null,
+      language: lang,
+      userAgent: navigator.userAgent,
+      fromTelegram: Boolean(initData),
+      timestamp: new Date().toISOString()
+    };
+
+    // Отправим данные в Telegram боту, если инициализация есть
+    if (tg?.sendData) {
+      tg.sendData(JSON.stringify(eventData));
+    }
+
+    // Редирект сразу (без задержки)
+    window.location.href = targetUrl;
+  </script>
+</head>
+<body>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=index-en.html" />
+    <p>Please enable JavaScript. Redirecting...</p>
+  </noscript>
+  <p>Redirecting...</p>
+</body>
+</html>
