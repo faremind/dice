@@ -573,7 +573,6 @@
                 <!-- Содержимое результатов будет добавлено здесь -->
             </div>
             <div class="modal-footer">
-                <button class="send-to-chat" onclick="sendToChat()">Отправить в чат</button>
                 <button class="close-results" onclick="closeResults()">Закрыть</button>
             </div>
         </div>
@@ -1014,12 +1013,6 @@
         // Close results modal
         function closeResults() {
             document.getElementById('results-modal').classList.add('hidden');
-        }
-
-        // Send results to chat (simulated)
-        function sendToChat() {
-            showWarning('Результаты отправлены в чат!');
-            closeResults();
         }
 
         // Open settings modal

@@ -11,17 +11,6 @@
       return userLang.split('-')[0];
     }
 
-    // Отправка данных в Telegram-бот (если открыто в Telegram WebApp)
-    function sendTelegramLog(eventName) {
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        // Отправляем данные (JSON-строка)
-        window.Telegram.WebApp.sendData(JSON.stringify({ event: eventName, timestamp: new Date().toISOString() }));
-      } else {
-        // Можно сюда добавить fallback-логику для других случаев, если нужно
-        console.log('Not in Telegram WebApp, no data sent');
-      }
-    }
 
     // Определяем язык и делаем редирект
     const lang = getPreferredLanguage();
