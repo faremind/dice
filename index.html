@@ -1,47 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Language Redirect with Telegram WebApp Logging</title>
-  <script>
-    // Получаем предпочтительный язык браузера
-    function getPreferredLanguage() {
-      const userLang = navigator.language || navigator.userLanguage;
-      return userLang.split('-')[0];
-    }
-
-    // Отправка данных в Telegram-бот (если открыто в Telegram WebApp)
-    function sendTelegramLog(eventName) {
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        // Отправляем данные (JSON-строка)
-        window.Telegram.WebApp.sendData(JSON.stringify({ event: eventName, timestamp: new Date().toISOString() }));
-      } else {
-        // Можно сюда добавить fallback-логику для других случаев, если нужно
-        console.log('Not in Telegram WebApp, no data sent');
-      }
-    }
-
-    // Определяем язык и делаем редирект
-    const lang = getPreferredLanguage();
-
-    // Сразу логируем открытие страницы
-    sendTelegramLog('app_opened');
-
-    // Перенаправление без задержки
-    if (lang === 'ru') {
-      window.location.replace('index-ru.html');
-    } else {
-      window.location.replace('index-en.html');
-    }
-  </script>
-</head>
-<body>
-  <noscript>
-    <p>Please enable JavaScript to use this website. Redirecting to English version...</p>
-    <meta http-equiv="refresh" content="0; url=index-en.html" />
-  </noscript>
-  <p>Redirecting to the appropriate language version...</p>
-</body>
-</html>
+@dp.message(lambda message: message.web_app_data is not None)
+async def handle_webapp(message: types.Message):
+    """Обработка данных из WebApp"""
+    try:
+        await log_action(
+            "WebApp interaction",
+            message.from_user,
+            "Data received from WebApp",
+            {
+                "url": message.web_app_data.url,
+                "data": message.web_app_data.data
+            }
+        )
+        await message.answer(f"Received data: {message.web_app_data.data}")
+    except Exception as e:
+        await log_action("WebApp data handling failed", message.from_user, f"Error: {str(e)}")
+        await message.answer("Failed to process WebApp data.")
